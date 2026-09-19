@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bike Finance Calculator - VirazZz</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #111827, #1f2937);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 430px;
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+        text-align: center;
+        margin: 0 0 5px;
+        color: #111827;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #6b7280;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 7px;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 15px;
+        outline: none;
+        margin-bottom: 15px;
+    }
+
+    input:focus, select:focus {
+        border-color: #111827;
+    }
+
+    .error {
+        color: #dc2626;
+        font-size: 13px;
+        text-align: center;
+        margin-top: 5px;
+    }
+
+    .emi-box {
+        margin-top: 15px;
+        background: #111827;
+        color: white;
+        border-radius: 15px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .emi-label {
+        font-size: 13px;
+        opacity: 0.8;
+        margin-bottom: 5px;
+    }
+
+    .emi {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    details {
+        margin-top: 15px;
+        background: #f3f4f6;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    summary {
+        padding: 14px 16px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        color: #374151;
+        list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    summary::after {
+        content: "▼";
+        float: right;
+        font-size: 11px;
+    }
+
+    details[open] summary::after {
+        content: "▲";
+    }
+
+    .result {
+        background: #f3f4f6;
+        border-radius: 0 0 15px 15px;
+        padding: 5px 15px 15px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 9px 0;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+    }
+
+    .row:last-child {
+        border-bottom: none;
+    }
+
+    .row span:first-child {
+        color: #6b7280;
+    }
+
+    .row span:last-child {
+        font-weight: bold;
+        color: #111827;
+    }
+
+    .copyright {
+        text-align: center;
+        color: #9ca3af;
+        font-size: 11px;
+        margin-top: 18px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🏍️ Bike Finance Calculator</h2>
+    <div class="subtitle">Enter Basic Loan & Tenure</div>
+
+    <label>Basic Loan Amount</label>
+    <input type="number" id="basicLoan" placeholder="Enter Basic Loan">
+
+    <label>Tenure</label>
+    <select id="tenure">
+        <option value="">Select Tenure</option>
+        <option value="12">12 Months</option>
+        <option value="18">18 Months</option>
+        <option value="24">24 Months</option>
+        <option value="30">30 Months</option>
+        <option value="36">36 Months</option>
+    </select>
+
+    <div class="error" id="error"></div>
+
+    <!-- EMI -->
+    <div class="emi-box">
+        <div class="emi-label">Monthly EMI</div>
+        <div class="emi" id="emi">₹0.00</div>
+    </div>
+
+    <!-- Calculation Details -->
+    <details>
+        <summary>View Calculation Details</summary>
+
+        <div class="result">
+
+            <div class="row">
+                <span>Basic Loan</span>
+                <span id="basicLoanResult">₹0.00</span>
+            </div>
+
+            <div class="row">
+                <span>Policy</span>
+                <span id="policy">₹0.00</span>
+            </div>
+
+            <div class="row">
+                <span>Insurance Policy</span>
+                <span id="insurance">₹0.00</span>
+            </div>
+
+            <div class="row">
+                <span>File Charges</span>
+                <span id="fileCharges">₹900.00</span>
+            </div>
+
+            <div class="row">
+                <span>Loan Amount</span>
+                <span id="loanAmount">₹0.00</span>
+            </div>
+
+            <div class="row">
+                <span>Interest Rate</span>
+                <span id="interestRate">0%</span>
+            </div>
+
+            <div class="row">
+                <span>Interest</span>
+                <span id="interest">₹0.00</span>
+            </div>
+
+            <div class="row">
+                <span>Total Payable</span>
+                <span id="totalPayable">₹0.00</span>
+            </div>
+
+        </div>
+    </details>
+
+    <div class="copyright">
+        © 2026 VirazZz Software Solutions
+    </div>
+
+</div>
+
+<script>
+
+const basicLoanInput = document.getElementById("basicLoan");
+const tenureInput = document.getElementById("tenure");
+
+function calculate() {
+
+    const basicLoan = parseFloat(basicLoanInput.value);
+    const months = parseInt(tenureInput.value);
+
+    const error = document.getElementById("error");
+
+    if (!basicLoan || !months) {
+        document.getElementById("emi").innerText = "₹0.00";
+        return;
+    }
+
+    // Policy
+    let policy = 0;
+
+    if (basicLoan >= 50000 && basicLoan <= 74999) {
+        policy = 1315;
+    } 
+    else if (basicLoan >= 75000 && basicLoan <= 99999) {
+        policy = 1965;
+    } 
+    else {
+        error.innerText = "Basic Loan must be between ₹50,000 and ₹99,999.";
+        document.getElementById("emi").innerText = "₹0.00";
+        return;
+    }
+
+    error.innerText = "";
+
+    // Insurance Policy = (Basic Loan + Policy) × 3.5%
+    const insurance = (basicLoan + policy) * 0.035;
+
+    // File Charges
+    const fileCharges = 900;
+
+    // Final Loan Amount
+    const loanAmount = basicLoan + policy + insurance + fileCharges;
+
+    // Interest Rate
+    let rate = 0;
+
+    if (months === 12) rate = 10;
+    else if (months === 18) rate = 10.5;
+    else if (months === 24) rate = 11.5;
+    else if (months === 30) rate = 12.5;
+    else if (months === 36) rate = 13.5;
+
+    // Interest
+    const interest = loanAmount * (rate / 100) * (months / 12);
+
+    // Total Payable
+    const totalPayable = loanAmount + interest;
+
+    // EMI
+    const emi = totalPayable / months;
+
+    // Display
+    document.getElementById("basicLoanResult").innerText =
+        "₹" + basicLoan.toFixed(2);
+
+    document.getElementById("policy").innerText =
+        "₹" + policy.toFixed(2);
+
+    document.getElementById("insurance").innerText =
+        "₹" + insurance.toFixed(2);
+
+    document.getElementById("fileCharges").innerText =
+        "₹" + fileCharges.toFixed(2);
+
+    document.getElementById("loanAmount").innerText =
+        "₹" + loanAmount.toFixed(2);
+
+    document.getElementById("interestRate").innerText =
+        rate + "%";
+
+    document.getElementById("interest").innerText =
+        "₹" + interest.toFixed(2);
+
+    document.getElementById("totalPayable").innerText =
+        "₹" + totalPayable.toFixed(2);
+
+    document.getElementById("emi").innerText =
+        "₹" + emi.toFixed(2);
+}
+
+basicLoanInput.addEventListener("input", calculate);
+tenureInput.addEventListener("change", calculate);
+
+</script>
+
+</body>
+</html>
