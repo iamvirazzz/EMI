@@ -260,15 +260,17 @@ function calculate() {
 
     // Policy
     let policy = 0;
-
-    if (basicLoan >= 50000 && basicLoan <= 74999) {
+     if (basicLoan >= 20000 && basicLoan <= 49999) {
+        policy = 1020;
+    }
+    else if (basicLoan >= 50000 && basicLoan <= 74999) {
         policy = 1315;
     } 
     else if (basicLoan >= 75000 && basicLoan <= 99999) {
         policy = 1965;
     } 
     else {
-        error.innerText = "Basic Loan must be between ₹50,000 and ₹99,999.";
+        error.innerText = "Basic Loan must be between ₹20,000 and ₹99,999.";
         document.getElementById("emi").innerText = "₹0.00";
         return;
     }
